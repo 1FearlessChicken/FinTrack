@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'inventory' %}">Inventory</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add Inventory Item</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-body">
+
+                    <form action="{% url 'add-inventoryItem' %}" method="post">
+                        {% include 'partials/_messages.html' %}
+                        {%csrf_token%}                
+
+                        <div class="form-group">
+                            <label for="">Quantity</label>
+                            <input
+                            type="number"
+                            name="quantity"
+                            class="input form-control form-control-sm"
+                            value="{{values.quantity}}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Description</label>
+                            <input 
+                            type="text"
+                            name="description"
+                            class="input form-control form-control-sm"
+                            value="{{values.description}}"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Location</label>
+                            <select class="form-control" name="location">
+                                {% for location in locations %}
+                                
+                                <option name="location" value="{{location.name}}">{{location.name}}</option>
+
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="">Date of Entry</label>
+                            <input type="date" name="entry_date" class="input form-control form-control-sm"/>
+                            </div>
+                        </div>                    
+                        <input type="submit" value="Submit" class="btn btn-primary btn-primary-sm "/>
+
+                    </form>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+{% endblock  %}
+
+
+
