@@ -12,59 +12,59 @@ from userpreferences.models import UserPreference
 @login_required(login_url="/authentication/login")
 def index(request):
     categories = Category.objects.all()
-    expenses = Expense.objects.filter(owner=request.user)
-    paginator = Paginator(expenses, 10)
+    incomes = Income.objects.filter(owner=request.user)
+    paginator = Paginator(incomes, 5)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
     # currency = UserPreference.objects.get(user=request.user).currency
     context = {
-        'expenses' : expenses,
+        'incomes' : incomes,
         'page_obj' : page_obj,
         # 'currency' : currency,
         
     }
-    return render(request, 'expenses/index.html', context)
+    return render(request, 'income/index.html', context)
 
 
-def add_expense(request):
+def add_income(request):
     categories = Category.objects.all()
     context = {
             'categories' : categories,
             'values' : request.POST,
         }
     if request.method == "GET":
-        return render(request, 'expenses/add_expense.html', context)
+        return render(request, 'income/add_income.html', context)
 
     if request.method == 'POST':
         amount = request.POST['amount']
         if not amount:
             messages.error(request, 'Amount is required')
-            return render(request, 'expenses/add_expense.html', context)
+            return render(request, 'income/add_income.html', context)
         
         description = request.POST['description']
         if not description:
             messages.error(request, 'Description is required')
-            return render(request, 'expenses/add_expense.html', context)
+            return render(request, 'income/add_income.html', context)
 
-        date = request.POST['expense_date']
+        date = request.POST['income_date']
         category = request.POST['category']
         
-        Expense.objects.create(owner=request.user, amount=amount, date=date, category=category, description=description)
-        messages.success(request, 'Expense saved successfully')
+        Income.objects.create(owner=request.user, amount=amount, date=date, category=category, description=description)
+        messages.success(request, 'Income saved successfully')
         
-        return redirect('expenses')
+        return redirect('incomes')
     
-def expense_edit(request, id):
-    expense = Expense.objects.get(pk=id)
+def income_edit(request, id):
+    income = Income.objects.get(pk=id)
     categories = Category.objects.all()
     context = {
-        'expense' : expense,
-        'values' : expense,
+        'income' : income,
+        'values' : income,
         'categories' : categories,
     }
     
     if request.method == "GET":
-        return render(request, 'expenses/edit_expense.html', context)
+        return render(request, 'income/edit_income.html', context)
     
     if request.method == "POST":
         amount = request.POST['amount']
@@ -74,44 +74,44 @@ def expense_edit(request, id):
         
         if not amount:
             messages.error(request, 'Amount is required')
-            return render(request, 'expenses/edit_expense.html', context)
+            return render(request, 'incomes/edit_income.html', context)
         
         if not description:
             messages.error(request, 'Description is required')
-            return render(request, 'expenses/edit_expense.html', context)
+            return render(request, 'income/edit_income.html', context)
         
         # expense.objects.create(owner=request.user, amount=amount, date=date, category=category, description=description)
-        expense.owner=request.user
-        expense.amount=amount
-        expense.date=date
-        expense.category=category
-        expense.description=description
+        income.owner=request.user
+        income.amount=amount
+        income.date=date
+        income.category=category
+        income.description=description
         
-        expense.save()
-        messages.success(request, 'Expense updated successfully')
+        income.save()
+        messages.success(request, 'Income updated successfully')
         
-        return redirect('expenses')
+        return redirect('incomes')
     
-def delete_expense(request, id):
-    expense = Expense.objects.get(pk=id)
-    expense.delete()
+def delete_income(request, id):
+    income = Income.objects.get(pk=id)
+    income.delete()
     
-    messages.success(request, "Expense Removed")
-    return redirect('expenses')
+    messages.success(request, "Income Removed")
+    return redirect('incomes')
 
 
 
-def search_expenses(request):
+def search_incomes(request):
     if request.method == "POST":
         
         search_str = json.loads(request.body).get('searchText')
         
-        expenses = Expense.objects.filter(
-            amount__istartswith=search_str, owner=request.user) | Expense.objects.filter(
-                date__istartswith=search_str, owner=request.user) | Expense.objects.filter(
-                    description__icontains=search_str, owner=request.user) | Expense.objects.filter(
+        incomes = Income.objects.filter(
+            amount__istartswith=search_str, owner=request.user) | Income.objects.filter(
+                date__istartswith=search_str, owner=request.user) | Income.objects.filter(
+                    description__icontains=search_str, owner=request.user) | Income.objects.filter(
                         category__icontains=search_str, owner=request.user)
       
-        data = expenses.values()
+        data = incomes.values()
         
         return JsonResponse(list(data), safe=False)

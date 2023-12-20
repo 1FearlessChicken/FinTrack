@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'authentication',
     'userpreferences',
     'inventory',
+    'income',
     
     
 ]

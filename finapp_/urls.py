@@ -8,5 +8,6 @@ urlpatterns = [
     path('authentication/', include('authentication.urls')),
     path('preferences/', include('userpreferences.urls')),
     path('inventory/', include('inventory.urls')),
+    path('income/', include('income.urls')),
 ]
 urlpatterns += staticfiles_urlpatterns()
